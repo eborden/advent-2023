@@ -2,19 +2,18 @@ import {
   Parse,
   Parser,
   RMap,
-  choice,
   integer,
-  many,
   parse,
   seqMap,
-  string,
+  string
 } from "https://deno.land/x/applicative_parser@1.0.23/mod.ts"
+import {sepBy, stringUnion} from '../parser.ts'
 
-type Color = 'red' | 'green' | 'blue'
+const colors = <const>['red', 'green', 'blue']
 
-const pColor: Parser<unknown, Color> = RMap(x => <Color>x, choice(
-  string('red'), string('green'), string('blue')
-))
+type Color = typeof colors[number]
+
+const pColor: Parser<unknown, Color> = stringUnion(...colors)
 
 type Cube = {
   count: number,
@@ -25,12 +24,6 @@ const pCube: Parser<unknown, Cube> = seqMap(
   (count, _, color) => ({count, color}),
   integer, string(' '), pColor
 )
-
-const sepBy: <A, B>(p: Parser<unknown, A>, sep: Parser<unknown, B>) => Parser<unknown, Array<A>> =
-  (p, sep) => seqMap(
-    (x, xs) => ([x].concat(xs)),
-    p, many(seqMap((_, x) => (x), sep, p))
-  )
 
 export type CubeSet = {
   red: number,

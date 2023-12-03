@@ -5,12 +5,11 @@ import {
   RMap,
   choice,
   integer,
-  many,
   many1,
   parse,
-  seqMap,
   string
 } from "https://deno.land/x/applicative_parser@1.0.23/mod.ts"
+import {sepBy} from '../parser.ts'
 
 export type Cell =
   | {type: 'empty'}
@@ -41,10 +40,3 @@ export type Schematic = Array<Row>
 const pSchematic: Parser<unknown, Schematic> = sepBy(pRow, string('\n'))
 
 export const schematicParser: Parse<string, Schematic> = parse(pSchematic)
-
-function sepBy <A, B>(p: Parser<unknown, A>, sep: Parser<unknown, B>): Parser<unknown, Array<A>> {
-  return seqMap(
-    (x, xs) => ([x].concat(xs)),
-    p, many(seqMap((_, x) => (x), sep, p))
-  )
-}
