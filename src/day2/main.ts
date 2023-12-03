@@ -12,15 +12,15 @@ export async function main (): Promise<void> {
   const lines = Deno.stdin.readable
     .pipeThrough(new TextDecoderStream())
     .pipeThrough(new TextLineStream())
+
   for await (const line of lines) {
+    const {result: round} = roundParser({cs: line, pos: 0, attr: ''})
+    if (round === undefined) throw new Error(round)
 
-    const {result} = roundParser({cs: line, pos: 0, attr: ''})
-    if (result === undefined) throw new Error(result)
-
-    if (isPossible(result, {red: 12, green: 13, blue: 14})) {
-      solution1 += result.id
+    if (isPossible(round, {red: 12, green: 13, blue: 14})) {
+      solution1 += round.id
     }
-    solution2 += powerSet(minSet(result))
+    solution2 += powerSet(minSet(round))
   }
   console.log(solution1)
   console.log(solution2)
