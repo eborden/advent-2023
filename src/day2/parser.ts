@@ -18,10 +18,10 @@ const pCube: Parser<unknown, Cube> = seqMap(
   integer, OneOf(' '), pColor
 )
 
-const sepBy: <A>(p: Parser<unknown, A>, x: string) => Parser<unknown, Array<A>> =
+const sepBy: <A, B>(p: Parser<unknown, A>, sep: Parser<unknown, B>) => Parser<unknown, Array<A>> =
   (p, sep) => seqMap(
     (x, xs) => ([x].concat(xs)),
-    p, many(seqMap((_, x) => (x), string(sep), p))
+    p, many(seqMap((_, x) => (x), sep, p))
   )
 
 export type CubeSet = {
@@ -41,7 +41,7 @@ const pCubeSet: Parser<unknown, CubeSet> = RMap(
     start[color] += count
     return start
   }, emptyCubeSet()),
-  sepBy(pCube, ', ')
+  sepBy(pCube, string(', '))
 )
 
 export type Round = {
@@ -51,7 +51,7 @@ export type Round = {
 
 const pRound: Parser<unknown, Round> = seqMap(
   (_, id, __, sets) => ({id, sets}),
-  string('Game '), integer, string(': '), sepBy(pCubeSet, '; ')
+  string('Game '), integer, string(': '), sepBy(pCubeSet, string('; '))
 )
 
 export const roundParser: Parse<string, Round> = parse(pRound)
