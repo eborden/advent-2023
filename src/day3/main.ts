@@ -11,8 +11,7 @@ export async function main (): Promise<void> {
   for await (const chunk of input) {
     rawMap += chunk
   }
-  const {result: schematic, errors} = schematicParser({cs: rawMap, pos: 0, attr: ''})
-  if (schematic === undefined) throw new Error(errors.toString())
+  const schematic = schematicParser(rawMap)
 
   let solution1 = 0
   const ratioMap: Map<string, Array<number>> = new Map([])

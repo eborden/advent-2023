@@ -1,15 +1,13 @@
 import {
-  Parse,
   Parser,
   OneOf,
   RMap,
   choice,
   integer,
   many1,
-  parse,
   string
 } from "https://deno.land/x/applicative_parser@1.0.23/mod.ts"
-import {sepBy} from '../parser.ts'
+import {sepBy, parseOrThrow} from '../parser.ts'
 
 export type Cell =
   | {type: 'empty'}
@@ -39,4 +37,4 @@ export type Schematic = Array<Row>
 
 const pSchematic: Parser<unknown, Schematic> = sepBy(pRow, string('\n'))
 
-export const schematicParser: Parse<string, Schematic> = parse(pSchematic)
+export const schematicParser: (str: string) => Schematic = parseOrThrow(pSchematic)

@@ -1,11 +1,21 @@
 import {
   Parser,
+  parse,
   many,
   seqMap,
   choice,
   string,
   RMap
 } from "https://deno.land/x/applicative_parser@1.0.23/mod.ts"
+
+export function parseOrThrow<A>(parser: Parser<unknown, A>): (str: string) => A {
+  const p = parse(parser)
+  return (str) => {
+    const {result, errors} = p({cs: str, pos: 0, attr: ''})
+    if (result === undefined) throw new Error(errors.toString())
+    return result
+  }
+}
 
 export function sepBy <A, B>(p: Parser<unknown, A>, sep: Parser<unknown, B>): Parser<unknown, Array<A>> {
   return seqMap(

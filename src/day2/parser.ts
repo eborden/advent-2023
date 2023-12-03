@@ -1,13 +1,11 @@
 import {
-  Parse,
   Parser,
   RMap,
   integer,
-  parse,
   seqMap,
   string
 } from "https://deno.land/x/applicative_parser@1.0.23/mod.ts"
-import {sepBy, stringUnion} from '../parser.ts'
+import {sepBy, stringUnion, parseOrThrow} from '../parser.ts'
 
 const colors = <const>['red', 'green', 'blue']
 
@@ -55,4 +53,4 @@ const pRound: Parser<unknown, Round> = seqMap(
   string('Game '), integer, string(': '), sepBy(pCubeSet, string('; '))
 )
 
-export const roundParser: Parse<string, Round> = parse(pRound)
+export const roundParser: (str: string) => Round = parseOrThrow(pRound)
