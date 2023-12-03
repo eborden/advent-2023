@@ -42,8 +42,8 @@ export async function main (): Promise<void> {
 }
 
 type Adjacent = {
-  symbol: string,
   code: number,
+  symbol: string,
   symbolPosition: [number, number]
 }
 
@@ -51,12 +51,17 @@ function extractAdjacentSymbol (i: number, j: number, schematic: Schematic): Arr
   const adjacents: Array<Adjacent> = []
   const cell = schematic[i][j]
   if (cell.type === 'code') {
-    const right = Array.from(
-      { length: cell.digits },
-      (_, i) => [[1, i + 1], [0, i + 1], [-1, i + 1]]
-    ).flatMap(x => x)
-    const others = [[1, -1], [1, 0], [-1, 0], [-1, -1], [0, -1]]
-    for (const [y, x] of [...others, ...right]) {
+
+    // Build right facing directions based on number of digits in code
+    const dynamicDirections = Array.from(
+        { length: cell.digits },
+        (_, i) => [[i + 1, 1], [i + 1, 0], [i + 1, -1]]
+      ).flatMap(x => x)
+    const staticDirections = [[-1, 1], [0, 1], [0, -1], [-1, -1], [-1, 0]]
+    const directions = [...dynamicDirections, ...staticDirections]
+
+    // Search for and accumulate adjacent symbols
+    for (const [x, y] of directions) {
       const row = schematic[i + y]
       if (row) {
         const neighbor = row[j + x]
@@ -75,5 +80,6 @@ function extractAdjacentSymbol (i: number, j: number, schematic: Schematic): Arr
       }
     }
   }
+
   return adjacents
 }
