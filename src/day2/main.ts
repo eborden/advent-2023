@@ -14,8 +14,8 @@ export async function main (): Promise<void> {
     .pipeThrough(new TextLineStream())
 
   for await (const line of lines) {
-    const {result: round} = roundParser({cs: line, pos: 0, attr: ''})
-    if (round === undefined) throw new Error(round)
+    const {result: round, errors} = roundParser({cs: line, pos: 0, attr: ''})
+    if (round === undefined) throw new Error(errors.toString())
 
     if (isPossible(round, {red: 12, green: 13, blue: 14})) {
       solution1 += round.id
