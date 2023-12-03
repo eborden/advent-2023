@@ -1,5 +1,13 @@
 import {
-  seqMap, Parser, Parse, OneOf, integer, string, choice, RMap, parse, many
+  Parse,
+  Parser,
+  RMap,
+  choice,
+  integer,
+  many,
+  parse,
+  seqMap,
+  string,
 } from "https://deno.land/x/applicative_parser@1.0.23/mod.ts"
 
 type Color = 'red' | 'green' | 'blue'
@@ -15,7 +23,7 @@ type Cube = {
 
 const pCube: Parser<unknown, Cube> = seqMap(
   (count, _, color) => ({count, color}),
-  integer, OneOf(' '), pColor
+  integer, string(' '), pColor
 )
 
 const sepBy: <A, B>(p: Parser<unknown, A>, sep: Parser<unknown, B>) => Parser<unknown, Array<A>> =
