@@ -29,8 +29,10 @@ export async function main(): Promise<void> {
       })
     }
   }
+  const solution2 = cardCopies.reduce((x, y) => x + y, 0)
+
   console.log(solution1)
-  console.log(cardCopies.reduce((x, y) => x + y, 0))
+  console.log(solution2)
 }
 
 function score<A>([x, ...xs]: Set<A>): number {
