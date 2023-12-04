@@ -1,5 +1,4 @@
---- Day 3: Gear Ratios ---
---------------------------
+## --- Day 3: Gear Ratios ---
 
 You and the Elf eventually reach a gondola lift station; he says the gondola
 lift will take you up to the water source, but this is as far as he can bring
@@ -43,24 +42,23 @@ In this schematic, two numbers are not part numbers because they are not
 adjacent to a symbol: 114 (top right) and 58 (middle right). Every other number
 is adjacent to a symbol and so is a part number; their sum is 4361.
 
-Of course, the actual engine schematic is much larger. What is the sum of all
-of the part numbers in the engine schematic?
+Of course, the actual engine schematic is much larger. What is the sum of all of
+the part numbers in the engine schematic?
 
---- Part Two ---
-----------------
+## --- Part Two ---
 
-The engineer finds the missing part and installs it in the engine! As the
-engine springs to life, you jump in the closest gondola, finally ready to
-ascend to the water source.
+The engineer finds the missing part and installs it in the engine! As the engine
+springs to life, you jump in the closest gondola, finally ready to ascend to the
+water source.
 
 You don't seem to be going very fast, though. Maybe something is still wrong?
 Fortunately, the gondola has a phone labeled "help", so you pick it up and the
 engineer answers.
 
-Before you can explain the situation, she suggests that you look out the
-window. There stands the engineer, holding a phone in one hand and waving with
-the other. You're going so slowly that you haven't even left the station. You
-exit the gondola.
+Before you can explain the situation, she suggests that you look out the window.
+There stands the engineer, holding a phone in one hand and waving with the
+other. You're going so slowly that you haven't even left the station. You exit
+the gondola.
 
 The missing part wasn't the only issue - one of the gears in the engine is
 wrong. A gear is any * symbol that is adjacent to exactly two part numbers. Its

@@ -1,10 +1,10 @@
 #!/usr/bin/env -S deno -L info run
 
-import {schematicParser, Schematic} from './parser.ts'
+import { Schematic, schematicParser } from './parser.ts'
 
 main()
 
-export async function main (): Promise<void> {
+export async function main(): Promise<void> {
   const input = Deno.stdin.readable
     .pipeThrough(new TextDecoderStream())
   let rawMap = ''
@@ -19,7 +19,7 @@ export async function main (): Promise<void> {
     row.forEach((_, j) => {
       const nums = extractAdjacentSymbol(i, j, schematic)
       if (nums.length > 0) {
-        nums.forEach(({code, symbol, symbolPosition}) => {
+        nums.forEach(({ code, symbol, symbolPosition }) => {
           // solution 1
           solution1 += code
 
@@ -33,20 +33,25 @@ export async function main (): Promise<void> {
     })
   })
   console.log(solution1)
-  console.log(Array.from(ratioMap.values())
-    .filter(xs => xs.length > 1)
-    .map(xs => xs.reduce((x, y) => x * y, 1))
-    .reduce((x, y) => x + y, 0)
+  console.log(
+    Array.from(ratioMap.values())
+      .filter((xs) => xs.length > 1)
+      .map((xs) => xs.reduce((x, y) => x * y, 1))
+      .reduce((x, y) => x + y, 0),
   )
 }
 
 type Adjacent = {
-  code: number,
-  symbol: string,
+  code: number
+  symbol: string
   symbolPosition: [number, number]
 }
 
-function extractAdjacentSymbol (i: number, j: number, schematic: Schematic): Array<Adjacent> {
+function extractAdjacentSymbol(
+  i: number,
+  j: number,
+  schematic: Schematic,
+): Array<Adjacent> {
   const adjacents: Array<Adjacent> = []
   const cell = schematic[i][j]
   if (cell.type === 'code') {
@@ -61,10 +66,11 @@ function extractAdjacentSymbol (i: number, j: number, schematic: Schematic): Arr
               adjacents.push({
                 code: cell.code,
                 symbol: neighbor.symbol,
-                symbolPosition: [j + x, i + y]
+                symbolPosition: [j + x, i + y],
               })
-              break;
-            default: break;
+              break
+            default:
+              break
           }
         }
       }
@@ -74,13 +80,12 @@ function extractAdjacentSymbol (i: number, j: number, schematic: Schematic): Arr
   return adjacents
 }
 
-function buildSearchDirections (digits: number): number[][] {
+function buildSearchDirections(digits: number): number[][] {
   // Build right facing directions based on number of digits in code
   const dynamicDirections = Array.from(
-      { length: digits },
-      (_, i) => [[i + 1, 1], [i + 1, 0], [i + 1, -1]]
-    ).flatMap(x => x)
+    { length: digits },
+    (_, i) => [[i + 1, 1], [i + 1, 0], [i + 1, -1]],
+  ).flatMap((x) => x)
   const staticDirections = [[-1, 1], [0, 1], [0, -1], [-1, -1], [-1, 0]]
   return [...dynamicDirections, ...staticDirections]
 }
-

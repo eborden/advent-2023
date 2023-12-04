@@ -1,10 +1,10 @@
 #!/usr/bin/env -S deno -L info run
 
-import { TextLineStream } from "std/streams/mod.ts";
+import { TextLineStream } from 'std/streams/mod.ts'
 
 main()
 
-export async function main (): Promise<void> {
+export async function main(): Promise<void> {
   let sum = 0
   const lines = Deno.stdin.readable
     .pipeThrough(new TextDecoderStream())
@@ -15,7 +15,7 @@ export async function main (): Promise<void> {
   console.log(sum)
 }
 
-function extractNumber (text: string): number {
+function extractNumber(text: string): number {
   let i = 0
   let j = text.length
   let x = null
@@ -48,25 +48,36 @@ function extractNumber (text: string): number {
 
 function parseNumber(x: string): string | null {
   if (!x) {
-    return null;
+    return null
   }
   const matches = x.match(numsRegex)
   if (!matches) {
-    return null;
+    return null
   }
   const result = matches[0]
   switch (result) {
-    case 'zero': return '0'
-    case 'one': return '1'
-    case 'two': return '2'
-    case 'three': return '3'
-    case 'four': return '4'
-    case 'five': return '5'
-    case 'six': return '6'
-    case 'seven': return '7'
-    case 'eight': return '8'
-    case 'nine': return '9'
-    default: return result
+    case 'zero':
+      return '0'
+    case 'one':
+      return '1'
+    case 'two':
+      return '2'
+    case 'three':
+      return '3'
+    case 'four':
+      return '4'
+    case 'five':
+      return '5'
+    case 'six':
+      return '6'
+    case 'seven':
+      return '7'
+    case 'eight':
+      return '8'
+    case 'nine':
+      return '9'
+    default:
+      return result
   }
 }
 
