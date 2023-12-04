@@ -60,18 +60,12 @@ function extractAdjacentSymbol(
       const row = schematic[i + y]
       if (row) {
         const neighbor = row[j + x]
-        if (neighbor) {
-          switch (neighbor.type) {
-            case 'symbol':
-              adjacents.push({
-                code: cell.code,
-                symbol: neighbor.symbol,
-                symbolPosition: [j + x, i + y],
-              })
-              break
-            default:
-              break
-          }
+        if (neighbor.type == 'symbol') {
+          adjacents.push({
+            code: cell.code,
+            symbol: neighbor.symbol,
+            symbolPosition: [j + x, i + y],
+          })
         }
       }
     }
