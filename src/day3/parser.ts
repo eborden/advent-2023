@@ -6,7 +6,7 @@ import {
   integer,
   many1,
   string
-} from "https://deno.land/x/applicative_parser@1.0.23/mod.ts"
+} from "applicative_parser/mod.ts"
 import {sepBy, parseOrThrow} from '../parser.ts'
 
 export type Cell =

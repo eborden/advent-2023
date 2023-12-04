@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "applicative_parser/": "https://deno.land/x/applicative_parser@1.0.23/",
+    "std/": "https://deno.land/std@0.208.0/"
+  }
+}

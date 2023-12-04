@@ -6,7 +6,7 @@ import {
   choice,
   string,
   RMap
-} from "https://deno.land/x/applicative_parser@1.0.23/mod.ts"
+} from "applicative_parser/mod.ts"
 
 export function parseOrThrow<A>(parser: Parser<unknown, A>): (str: string) => A {
   const p = parse(parser)

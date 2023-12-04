@@ -4,7 +4,7 @@ import {
   integer,
   seqMap,
   string
-} from "https://deno.land/x/applicative_parser@1.0.23/mod.ts"
+} from "applicative_parser/mod.ts"
 import {sepBy, stringUnion, parseOrThrow} from '../parser.ts'
 
 const colors = <const>['red', 'green', 'blue']

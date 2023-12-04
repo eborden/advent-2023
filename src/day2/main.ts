@@ -1,6 +1,6 @@
 #!/usr/bin/env -S deno -L info run
 
-import {TextLineStream} from "https://deno.land/std@0.208.0/streams/mod.ts";
+import {TextLineStream} from "std/streams/mod.ts";
 import {roundParser, Round, CubeSet} from "./parser.ts"
 
 main()
