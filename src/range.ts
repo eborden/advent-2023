@@ -14,18 +14,16 @@ export function difference(
   x: Range,
   y: Range,
 ): Array<Range> | null {
-  if (x[1] < y[0]) {
-    return [x]
-  } else if (x[0] > y[1]) {
-    return [x]
-  } else if (y[0] <= x[0] && x[1] <= y[1]) {
-    return []
+  if (y[0] <= x[0] && x[1] <= y[1]) {
+    return [] // x is a subset
+  } else if (x[1] < y[0] || x[0] > y[1]) {
+    return [x] // no intersection
   } else if (x[0] < y[0] && y[1] < x[1]) {
-    return [[x[0], y[0] - 1], [y[1] + 1, x[1]]]
+    return [[x[0], y[0] - 1], [y[1] + 1, x[1]]] // y is a subset
   } else if (x[1] < y[1]) {
-    return [[x[0], y[0]]]
+    return [[x[0], y[0]]] // x is a left intersect
   } else {
-    return [[y[1], x[1]]]
+    return [[y[1], x[1]]] // x is a right intersect
   }
 }
 
