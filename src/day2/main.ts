@@ -1,7 +1,7 @@
 #!/usr/bin/env -S deno -L info run
 
-import { TextLineStream } from 'std/streams/mod.ts'
 import { CubeSet, Round, roundParser } from './parser.ts'
+import { stdInLines } from '../io.ts'
 
 main()
 
@@ -9,11 +9,7 @@ export async function main(): Promise<void> {
   let solution1 = 0
   let solution2 = 0
 
-  const lines = Deno.stdin.readable
-    .pipeThrough(new TextDecoderStream())
-    .pipeThrough(new TextLineStream())
-
-  for await (const line of lines) {
+  for await (const line of stdInLines()) {
     const round = roundParser(line)
 
     if (isPossible(round, { red: 12, green: 13, blue: 14 })) {

@@ -1,15 +1,12 @@
 #!/usr/bin/env -S deno -L info run
 
-import { TextLineStream } from 'std/streams/mod.ts'
+import { stdInLines } from '../io.ts'
 
 main()
 
 export async function main(): Promise<void> {
   let sum = 0
-  const lines = Deno.stdin.readable
-    .pipeThrough(new TextDecoderStream())
-    .pipeThrough(new TextLineStream())
-  for await (const line of lines) {
+  for await (const line of stdInLines()) {
     sum += extractNumber(line)
   }
   console.log(sum)

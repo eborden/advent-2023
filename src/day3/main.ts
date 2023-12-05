@@ -1,16 +1,12 @@
 #!/usr/bin/env -S deno -L info run
 
 import { Schematic, schematicParser } from './parser.ts'
+import { flushStdIn } from '../io.ts'
 
 main()
 
 export async function main(): Promise<void> {
-  const input = Deno.stdin.readable
-    .pipeThrough(new TextDecoderStream())
-  let rawMap = ''
-  for await (const chunk of input) {
-    rawMap += chunk
-  }
+  const rawMap = await flushStdIn()
   const schematic = schematicParser(rawMap)
 
   let solution1 = 0

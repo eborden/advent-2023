@@ -2,17 +2,13 @@
 
 import { Almanac, almanacParser, RangeExpr } from './parser.ts'
 import { difference, intersection, isInRange, Range } from '../range.ts'
+import { flushStdIn } from '../io.ts'
 
 main()
 
 export async function main(): Promise<void> {
-  const input = Deno.stdin.readable
-    .pipeThrough(new TextDecoderStream())
-  let rawMap = ''
-  for await (const chunk of input) {
-    rawMap += chunk
-  }
-  const almanac = almanacParser(rawMap)
+  const rawAlmanac = await flushStdIn()
+  const almanac = almanacParser(rawAlmanac)
   const initial = Object.keys(almanac.categories)[0]
 
   console.log(

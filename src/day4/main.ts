@@ -1,19 +1,15 @@
 #!/usr/bin/env -S deno -L info run
 
-import { TextLineStream } from 'std/streams/mod.ts'
 import { cardParser } from './parser.ts'
+import { stdInLines } from '../io.ts'
 
 main()
 
 export async function main(): Promise<void> {
   let solution1 = 0
 
-  const lines = Deno.stdin.readable
-    .pipeThrough(new TextDecoderStream())
-    .pipeThrough(new TextLineStream())
-
   const cardCopies: number[] = []
-  for await (const line of lines) {
+  for await (const line of stdInLines()) {
     const card = cardParser(line)
     const matches = intersection(card.scratch, card.winning)
 
