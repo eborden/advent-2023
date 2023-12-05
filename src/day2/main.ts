@@ -27,14 +27,10 @@ function isPossible({ sets }: Round, { red, green, blue }: CubeSet): boolean {
 
 function minSet({ sets }: Round): CubeSet {
   return sets.reduce((x, { red, green, blue }) => ({
-    red: max(x.red, red),
-    green: max(x.green, green),
-    blue: max(x.blue, blue),
+    red: Math.max(x.red, red),
+    green: Math.max(x.green, green),
+    blue: Math.max(x.blue, blue),
   }), { red: 0, green: 0, blue: 0 })
-}
-
-function max(x: number, y: number): number {
-  return x > y ? x : y
 }
 
 function powerSet({ red, green, blue }: CubeSet): number {
