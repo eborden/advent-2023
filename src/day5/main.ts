@@ -13,21 +13,21 @@ export async function main(): Promise<void> {
   }
   const almanac = almanacParser(rawMap)
   const initial = Object.keys(almanac.categories)[0]
+
   console.log(
     'solution 1',
     almanac.seeds.flat().map((seed) => traverse(seed, initial, almanac)).reduce(
       min,
     ),
   )
-  const solution2 = []
-  for (const range of almanac.seeds) {
-    const ranges = traverseRange(
+
+  const solution2 = almanac.seeds.map((range) =>
+    traverseRange(
       [range[0], range[0] + range[1]],
       initial,
       almanac,
     )
-    solution2.push(ranges)
-  }
+  )
   console.log(
     'solution 2',
     solution2.flatMap((xs) => xs.map(([lower, _]) => lower)).reduce(min),
@@ -65,8 +65,8 @@ function findDestinationIntersect(
   // Identity souces with no destination and clean up intersections
   const noMatches = sources.reduce(
     (acc, src) =>
-      <[number, number][]>acc.flatMap(extra => getDifference(extra, src)),
-    extras
+      <[number, number][]> acc.flatMap((extra) => getDifference(extra, src)),
+    extras,
   )
   if (intersects.length <= 0) return [[lower, upper], ...noMatches]
   return [...intersects, ...noMatches]
@@ -119,7 +119,7 @@ function getDifference(
     return [x]
   } else if (y[0] <= x[0] && x[1] <= y[1]) {
     return []
-  } else if(x[0] < y[0] && y[1] < x[1]) {
+  } else if (x[0] < y[0] && y[1] < x[1]) {
     return [[x[0], y[0] - 1], [y[1] + 1, x[1]]]
   } else if (x[1] < y[1]) {
     return [[x[0], y[0]]]
