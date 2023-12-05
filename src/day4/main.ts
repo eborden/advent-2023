@@ -37,7 +37,7 @@ export async function main(): Promise<void> {
 
 function score<A>([x, ...xs]: Set<A>): number {
   if (x === undefined) return 0
-  return Array.from(xs).reduce((score, _) => score * 2, 1)
+  return xs.reduce((score, _) => score * 2, 1)
 }
 
 function intersection<A>(xs: Set<A>, ys: Set<A>): Set<A> {

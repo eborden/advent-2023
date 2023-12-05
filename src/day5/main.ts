@@ -1,7 +1,7 @@
 #!/usr/bin/env -S deno -L info run
 
-import { Almanac, almanacParser, Range } from './parser.ts'
-import { difference, intersection } from '../range.ts'
+import { Almanac, almanacParser, RangeExpr } from './parser.ts'
+import { difference, intersection, isInRange, Range } from '../range.ts'
 
 main()
 
@@ -37,37 +37,36 @@ export async function main(): Promise<void> {
 }
 
 function traverseRange(
-  [lower, upper]: [number, number],
+  [lower, upper]: Range,
   category: string,
   almanac: Almanac,
-): Array<[number, number]> {
+): Array<Range> {
   if (category === 'location') return [[lower, upper]]
 
   const map = almanac.categories[category]
-  return findDestinationIntersect([lower, upper], map.ranges).flatMap((bound) =>
-    traverseRange(bound, map.to, almanac)
+  return findDestinationIntersect([lower, upper], map.ranges).flatMap((range) =>
+    traverseRange(range, map.to, almanac)
   )
 }
 
 function findDestinationIntersect(
-  [lower, upper]: [number, number],
-  ranges: Array<Range>,
-): Array<[number, number]> {
-  const intersects: Array<[number, number]> = []
-  const sources: Array<[number, number]> = []
-  let extras: Array<[number, number]> = []
-  for (const range of ranges) {
-    const bound = intersectRange([lower, upper], range)
-    if (bound) {
-      intersects.push(bound.destination)
-      sources.push(bound.source)
-      extras = [...extras, ...bound.extras]
+  [lower, upper]: Range,
+  rangeExprs: Array<RangeExpr>,
+): Array<Range> {
+  const intersects: Array<Range> = []
+  const sources: Array<Range> = []
+  let extras: Array<Range> = []
+  for (const rangeExpr of rangeExprs) {
+    const ranges = intersectRange([lower, upper], rangeExpr)
+    if (ranges) {
+      intersects.push(ranges.destination)
+      sources.push(ranges.source)
+      extras = [...extras, ...ranges.extras]
     }
   }
   // Identity souces with no destination and clean up intersections
   const noMatches = sources.reduce(
-    (acc, src) =>
-      <[number, number][]> acc.flatMap((extra) => difference(extra, src)),
+    (acc, src) => <Range[]> acc.flatMap((extra) => difference(extra, src)),
     extras,
   )
   if (intersects.length <= 0) return [[lower, upper], ...noMatches]
@@ -75,24 +74,24 @@ function findDestinationIntersect(
 }
 
 function intersectRange(
-  x: [number, number],
-  range: Range,
+  x: Range,
+  rangeExpr: RangeExpr,
 ): {
-  source: [number, number]
-  destination: [number, number]
-  extras: Array<[number, number]>
+  source: Range
+  destination: Range
+  extras: Array<Range>
 } | null {
-  const y: [number, number] = [range.source, range.source + range.range]
+  const y: Range = [rangeExpr.source, rangeExpr.source + rangeExpr.length]
   const intersect = intersection(x, y)
   if (intersect !== null) {
     const [lower, upper] = intersect
     return {
       source: [lower, upper],
       destination: [
-        (lower - range.source) + range.destination,
-        (upper - range.source) + range.destination,
+        (lower - rangeExpr.source) + rangeExpr.destination,
+        (upper - rangeExpr.source) + rangeExpr.destination,
       ],
-      extras: <Array<[number, number]>> [
+      extras: <Array<Range>> [
         x[0] < y[0] && x[0] < lower ? [x[0], lower - 1] : null,
         y[1] < x[1] && upper < x[1] ? [upper + 1, x[1]] : null,
       ].filter((x) => x),
@@ -108,15 +107,13 @@ function traverse(seed: number, category: string, almanac: Almanac): number {
   return traverse(findDestination(seed, map.ranges), map.to, almanac)
 }
 
-function findDestination(seed: number, ranges: Array<Range>): number {
-  for (const range of ranges) {
-    if (isInRange(seed, range)) {
-      return (seed - range.source) + range.destination
+function findDestination(seed: number, rangeExprs: Array<RangeExpr>): number {
+  for (const rangeExpr of rangeExprs) {
+    if (
+      isInRange(seed, [rangeExpr.source, rangeExpr.source + rangeExpr.length])
+    ) {
+      return (seed - rangeExpr.source) + rangeExpr.destination
     }
   }
   return seed
-}
-
-function isInRange(seed: number, range: Range): boolean {
-  return range.source <= seed && seed <= range.source + range.range
 }

@@ -11,14 +11,14 @@ import {
 } from 'applicative_parser/mod.ts'
 import { parseOrThrow, sepBy } from '../parser.ts'
 
-export type Range = {
+export type RangeExpr = {
   source: number
   destination: number
-  range: number
+  length: number
 }
 
-const pRange: Parser<unknown, Range> = seqMap(
-  (destination, source, range) => ({ source, destination, range }),
+const pRangeExpr: Parser<unknown, RangeExpr> = seqMap(
+  (destination, source, length) => ({ source, destination, length }),
   token(integer),
   token(integer),
   integer,
@@ -38,19 +38,19 @@ const pName: Parser<unknown, [string, string]> = seqMap(
 
 const pCategories: Parser<
   unknown,
-  Record<string, { to: string; ranges: Array<Range> }>
+  Record<string, { to: string; ranges: Array<RangeExpr> }>
 > = seqMap(
   ([source, to], _, ranges) => ({ [source]: { ranges, to } }),
   token(pName),
   string('map:\n'),
-  sepBy(pRange, string('\n')),
+  sepBy(pRangeExpr, string('\n')),
 )
 
 export type Almanac = {
   seeds: Array<[number, number]>
   categories: Record<string, {
     to: string
-    ranges: Array<Range>
+    ranges: Array<RangeExpr>
   }>
 }
 
