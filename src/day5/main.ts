@@ -1,6 +1,7 @@
 #!/usr/bin/env -S deno -L info run
 
 import { Almanac, almanacParser, Range } from './parser.ts'
+import { difference, intersection } from '../range.ts'
 
 main()
 
@@ -17,7 +18,7 @@ export async function main(): Promise<void> {
   console.log(
     'solution 1',
     almanac.seeds.flat().map((seed) => traverse(seed, initial, almanac)).reduce(
-      min,
+      (x, y) => Math.min(x, y),
     ),
   )
 
@@ -29,7 +30,9 @@ export async function main(): Promise<void> {
         initial,
         almanac,
       )
-    ).flatMap((xs) => xs.map(([lower, _]) => lower)).reduce(min),
+    ).flatMap((xs) => xs.map(([lower, _]) => lower)).reduce((x, y) =>
+      Math.min(x, y)
+    ),
   )
 }
 
@@ -64,7 +67,7 @@ function findDestinationIntersect(
   // Identity souces with no destination and clean up intersections
   const noMatches = sources.reduce(
     (acc, src) =>
-      <[number, number][]> acc.flatMap((extra) => getDifference(extra, src)),
+      <[number, number][]> acc.flatMap((extra) => difference(extra, src)),
     extras,
   )
   if (intersects.length <= 0) return [[lower, upper], ...noMatches]
@@ -80,7 +83,7 @@ function intersectRange(
   extras: Array<[number, number]>
 } | null {
   const y: [number, number] = [range.source, range.source + range.range]
-  const intersect = getIntersect(x, y)
+  const intersect = intersection(x, y)
   if (intersect !== null) {
     const [lower, upper] = intersect
     return {
@@ -96,35 +99,6 @@ function intersectRange(
     }
   }
   return null
-}
-
-function getIntersect(
-  x: [number, number],
-  y: [number, number],
-): [number, number] | null {
-  const lower = max(x[0], y[0])
-  const upper = min(x[1], y[1])
-  if (lower <= upper) return [lower, upper]
-  return null
-}
-
-function getDifference(
-  x: [number, number],
-  y: [number, number],
-): [number, number][] | null {
-  if (x[1] < y[0]) {
-    return [x]
-  } else if (x[0] > y[1]) {
-    return [x]
-  } else if (y[0] <= x[0] && x[1] <= y[1]) {
-    return []
-  } else if (x[0] < y[0] && y[1] < x[1]) {
-    return [[x[0], y[0] - 1], [y[1] + 1, x[1]]]
-  } else if (x[1] < y[1]) {
-    return [[x[0], y[0]]]
-  } else {
-    return [[y[1], x[1]]]
-  }
 }
 
 function traverse(seed: number, category: string, almanac: Almanac): number {
@@ -145,12 +119,4 @@ function findDestination(seed: number, ranges: Array<Range>): number {
 
 function isInRange(seed: number, range: Range): boolean {
   return range.source <= seed && seed <= range.source + range.range
-}
-
-function min(x: number, y: number): number {
-  return x < y ? x : y
-}
-
-function max(x: number, y: number): number {
-  return x > y ? x : y
 }
