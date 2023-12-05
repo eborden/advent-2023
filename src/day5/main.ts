@@ -21,16 +21,15 @@ export async function main(): Promise<void> {
     ),
   )
 
-  const solution2 = almanac.seeds.map((range) =>
-    traverseRange(
-      [range[0], range[0] + range[1]],
-      initial,
-      almanac,
-    )
-  )
   console.log(
     'solution 2',
-    solution2.flatMap((xs) => xs.map(([lower, _]) => lower)).reduce(min),
+    almanac.seeds.map((range) =>
+      traverseRange(
+        [range[0], range[0] + range[1]],
+        initial,
+        almanac,
+      )
+    ).flatMap((xs) => xs.map(([lower, _]) => lower)).reduce(min),
   )
 }
 
