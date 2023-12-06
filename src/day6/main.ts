@@ -9,7 +9,15 @@ export async function main(): Promise<void> {
   const raw = await flushStdIn()
   const races = raceParser(raw)
   console.log('solution 1', races.map(numStrategies).reduce((x, y) => x * y, 1))
+  console.log('solution 2', numStrategies(concatRaces(races)))
+}
 
+function numStrategies(race: Race): number {
+  return Array.from({ length: race.time }).map((_, i) => (race.time - i) * i)
+    .filter((x) => race.distance < x).length
+}
+
+function concatRaces(races: Race[]): Race {
   const strRace = races.reduce(
     (acc, { time, distance }) => ({
       time: acc.time + time,
@@ -17,17 +25,8 @@ export async function main(): Promise<void> {
     }),
     { time: '', distance: '' },
   )
-  const longRace = {
+  return {
     time: parseInt(strRace.time, 10),
     distance: parseInt(strRace.distance, 10),
   }
-  console.log(
-    'solution 2',
-    numStrategies(longRace),
-  )
-}
-
-function numStrategies(race: Race): number {
-  return Array.from({ length: race.time }).map((_, i) => (race.time - i) * i)
-    .filter((x) => race.distance < x).length
 }
