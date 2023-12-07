@@ -21,7 +21,10 @@ export async function main(): Promise<void> {
     const handValue = (version2 ? getHandValue2 : getHandValue)(hand)
     hands[handValue].push(hand)
   }
-  const compare = version2 ? compareHand2 : compareHand
+  const compare = compareHand.bind(
+    null,
+    compareCard.bind(null, version2 ? cardValue2 : cardValue),
+  )
   const sortedHands = [
     ...hands[5].sort(compare),
     ...hands[4].sort(compare),
@@ -39,13 +42,17 @@ export async function main(): Promise<void> {
 }
 
 function getHandValue(hand: Hand): string {
-  return [...hand.cards].sort(compareCard).reduce(collectMatches, [])
+  return [...hand.cards].sort(compareCard.bind(null, cardValue)).reduce(
+    collectMatches,
+    [],
+  )
     .map((x) => x.length + '').sort().reverse().filter((x) => '1' !== x).join(
       '',
     )
 }
 
 function getHandValue2(hand: Hand): string {
+  const compareCard2 = compareCard.bind(null, cardValue2)
   const sorted = [...hand.cards].sort(compareCard2)
   const grouped = sorted.reduce(collectMatches, []).sort(compareLength)
   if (grouped[0].length === 5) {
@@ -83,25 +90,21 @@ function score(hands: Hand[]): number {
   )
 }
 
-function compareCard(a: string, b: string): number {
-  return cardValue[b] - cardValue[a]
+function compareCard(
+  valueMap: Record<string, number>,
+  a: string,
+  b: string,
+): number {
+  return valueMap[b] - valueMap[a]
 }
 
-function compareCard2(a: string, b: string): number {
-  return cardValue2[b] - cardValue2[a]
-}
-
-function compareHand({ cards: a }: Hand, { cards: b }: Hand): number {
+function compareHand(
+  compare: (a: string, b: string) => number,
+  { cards: a }: Hand,
+  { cards: b }: Hand,
+): number {
   for (let i = 0; i < 5; i++) {
-    const comp = compareCard(a[i], b[i])
-    if (comp !== 0) return comp
-  }
-  return 0
-}
-
-function compareHand2({ cards: a }: Hand, { cards: b }: Hand): number {
-  for (let i = 0; i < 5; i++) {
-    const comp = compareCard2(a[i], b[i])
+    const comp = compare(a[i], b[i])
     if (comp !== 0) return comp
   }
   return 0
