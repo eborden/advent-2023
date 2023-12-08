@@ -36,12 +36,16 @@ function traverse(
 ): number {
   do {
     const { value: move } = path.next()
-    cursors = cursors.map((cursor) => ({
-      position: map.instructions[cursor.position][move],
-      iteration: cursor.iteration + 1,
-    }))
+    cursors = cursors.map((cursor) =>
+      isFinish(cursor) ?
+        cursor :
+        {
+          position: map.instructions[cursor.position][move],
+          iteration: cursor.iteration + 1,
+        }
+    )
   } while (!cursors.every(isFinish))
-  return cursors[0].iteration
+  return findLCMOfArray(cursors.map(c => c.iteration))
 }
 
 function* moves(array: Move[]): Generator<Move, Move> {
@@ -60,4 +64,27 @@ type Cursor = {
 
 function mkCursor(position: string): Cursor {
   return { position, iteration: 0 }
+}
+
+function findLCMOfArray(numbers: number[]): number {
+  let lcm = 1;
+
+  for (let i = 0; i < numbers.length; i++) {
+    lcm = findLCM(lcm, numbers[i]);
+  }
+
+  return lcm;
+}
+
+function findLCM(a: number, b: number): number {
+  return (a * b) / findGCD(a, b);
+}
+
+function findGCD(a: number, b: number): number {
+  while (b !== 0) {
+    const temp = b;
+    b = a % b;
+    a = temp;
+  }
+  return a;
 }
