@@ -67,13 +67,7 @@ function mkCursor(position: string): Cursor {
 }
 
 function findLCMOfArray(numbers: number[]): number {
-  let lcm = 1;
-
-  for (let i = 0; i < numbers.length; i++) {
-    lcm = findLCM(lcm, numbers[i]);
-  }
-
-  return lcm;
+  return numbers.reduce((lcm, number) => findLCM(lcm, number), 1)
 }
 
 function findLCM(a: number, b: number): number {
